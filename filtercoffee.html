@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FilterCoffee — Case Study | Devika Naik</title>
+<meta name="description" content="FilterCoffee — A social investing platform. Product case study by Devika Naik.">
+<meta name="theme-color" content="#FAF9F7">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #FAF9F7;
+    --bg-alt: #F1EFEB;
+    --text: #1A1A1A;
+    --text-secondary: #5A5A5A;
+    --accent: #2D5BFF;
+    --accent-soft: rgba(45, 91, 255, 0.08);
+    --border: #E2E0DC;
+    --card-bg: #FFFFFF;
+    --fc-purple: #875BFF;
+    --fc-blue: #42A7E5;
+    --fc-bg: #17171F;
+    --fc-card: #272731;
+    --fc-white: #F8F6FF;
+    --fc-gray: #9C9EB8;
+    --fc-green: #38C976;
+    --fc-red: #FE5050;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg); color: var(--text);
+    line-height: 1.7; -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--accent); color: #fff; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(250,249,247,0.85);
+    backdrop-filter: blur(20px) saturate(1.8);
+    -webkit-backdrop-filter: blur(20px) saturate(1.8);
+    border-bottom: 1px solid var(--border);
+    transition: var(--transition);
+  }
+  nav.scrolled { background: rgba(250,249,247,0.95); box-shadow: 0 1px 12px rgba(0,0,0,0.04); }
+  .nav-inner {
+    max-width: 1140px; margin: 0 auto; padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between; height: 64px;
+  }
+  .nav-logo { font-weight: 700; font-size: 1.1rem; letter-spacing: -0.02em; color: var(--text); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .back-link { font-size: 0.85rem; font-weight: 500; color: var(--text-secondary); text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; transition: color 0.3s; }
+  .back-link:hover { color: var(--accent); }
+  .back-link svg { width: 16px; height: 16px; }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 1140px; margin: 0 auto; padding: 0 2rem; }
+  .narrow { max-width: 760px; }
+
+  /* ── CASE HERO ── */
+  .case-hero {
+    padding: 8rem 2rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .case-hero::before {
+    content: ''; position: absolute; top: -100px; right: -60px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(135,91,255,0.06) 0%, transparent 65%);
+    border-radius: 50%; pointer-events: none;
+  }
+  .case-eyebrow {
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--fc-purple); margin-bottom: 1.25rem;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .case-eyebrow::before { content: ''; width: 20px; height: 2px; background: var(--fc-purple); }
+  .case-hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 4.5vw, 3.5rem); font-weight: 500;
+    line-height: 1.15; letter-spacing: -0.03em; margin-bottom: 1.5rem;
+  }
+  .case-hero h1 em {
+    font-style: italic;
+    background: linear-gradient(135deg, var(--fc-purple), var(--fc-blue));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .case-subtitle {
+    font-size: 1.15rem; color: var(--text-secondary);
+    max-width: 600px; line-height: 1.85; margin-bottom: 2.5rem;
+  }
+  .case-meta { display: flex; gap: 3rem; flex-wrap: wrap; }
+  .meta-item { display: flex; flex-direction: column; gap: 0.25rem; }
+  .meta-label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-secondary); }
+  .meta-value { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+
+  /* ── CASE SECTIONS ── */
+  .case-section { padding: 4rem 2rem; }
+  .case-section.alt { background: var(--bg-alt); }
+  .case-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3vw, 2.2rem); font-weight: 500;
+    letter-spacing: -0.02em; margin-bottom: 1.5rem; line-height: 1.25;
+  }
+  .case-section p { color: var(--text-secondary); font-size: 1.02rem; line-height: 1.85; margin-bottom: 1.25rem; }
+  .case-section p:last-child { margin-bottom: 0; }
+
+  /* ── STATS ── */
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin: 3rem 0; }
+  .stat-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 2rem; text-align: center; transition: var(--transition);
+  }
+  .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
+  .stat-num {
+    font-family: 'Playfair Display', serif; font-size: 2.4rem; font-weight: 500; margin-bottom: 0.3rem;
+    background: linear-gradient(135deg, var(--fc-purple), var(--fc-blue));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .stat-label { font-size: 0.82rem; color: var(--text-secondary); font-weight: 500; }
+
+  /* ── FEATURES GRID ── */
+  .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin: 2.5rem 0; }
+  .feature-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 2rem; transition: var(--transition);
+    position: relative; overflow: hidden;
+  }
+  .feature-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--fc-purple), var(--fc-blue));
+    transform: scaleX(0); transform-origin: left; transition: transform 0.5s ease;
+  }
+  .feature-card:hover::before { transform: scaleX(1); }
+  .feature-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
+  .feature-icon {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, rgba(135,91,255,0.1), rgba(66,167,229,0.1));
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1rem; font-size: 1.3rem;
+  }
+  .feature-card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .feature-card p { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.65; margin-bottom: 0; }
+
+  /* ══════════════════════════════════════════
+     PHONE MOCKUPS — APP PREVIEW
+     ══════════════════════════════════════════ */
+  .phones-showcase {
+    padding: 5rem 2rem;
+    background: linear-gradient(180deg, #0B0B10 0%, #13131B 100%);
+    overflow: hidden;
+    position: relative;
+  }
+  .phones-showcase::before {
+    content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 800px;
+    background: radial-gradient(ellipse, rgba(135,91,255,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .phones-showcase h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3vw, 2.2rem); font-weight: 500;
+    color: var(--fc-white); text-align: center; margin-bottom: 0.5rem;
+    position: relative;
+  }
+  .phones-showcase .subtitle {
+    color: var(--fc-gray); font-size: 1rem;
+    text-align: center; margin-bottom: 3.5rem; position: relative;
+  }
+
+  .phones-row {
+    display: flex; justify-content: center; gap: 50px;
+    align-items: flex-start; flex-wrap: wrap;
+    position: relative; z-index: 1;
+  }
+
+  .phone-col {
+    display: flex; flex-direction: column; align-items: center; gap: 20px;
+  }
+
+  .phone-label-top {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 2px;
+    color: #7C7A93;
+  }
+
+  /* Phone Frame */
+  .phone-frame {
+    width: 320px; height: 680px;
+    border-radius: 40px;
+    background: var(--fc-bg);
+    border: 3px solid #2A2A36;
+    position: relative; overflow: hidden;
+    box-shadow: 0 0 0 1px rgba(135,91,255,0.08), 0 30px 80px rgba(0,0,0,0.6), 0 15px 40px rgba(135,91,255,0.08);
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.5s ease;
+  }
+  .phone-frame:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 0 0 1px rgba(135,91,255,0.15), 0 40px 100px rgba(0,0,0,0.7), 0 20px 50px rgba(135,91,255,0.12);
+  }
+
+  /* Notch */
+  .phone-frame::before {
+    content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 140px; height: 28px;
+    background: #111117; border-radius: 0 0 20px 20px; z-index: 100;
+  }
+
+  .phone-screen {
+    width: 100%; height: 100%;
+    overflow-y: auto; overflow-x: hidden;
+    padding-bottom: 70px;
+    scrollbar-width: none; -ms-overflow-style: none;
+  }
+  .phone-screen::-webkit-scrollbar { display: none; }
+
+  /* Bottom Tab Bar */
+  .app-tab-bar {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 65px;
+    background: #14101A;
+    display: flex; align-items: center; justify-content: space-around;
+    padding: 0 10px; z-index: 50;
+  }
+  .app-tab-item {
+    display: flex; flex-direction: column; align-items: center; gap: 4px; opacity: 0.5;
+  }
+  .app-tab-item.active { opacity: 1; }
+  .app-tab-icon { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
+  .app-tab-icon svg { width: 20px; height: 20px; }
+  .app-tab-label { font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500; color: #7C7A93; }
+  .app-tab-item.active .app-tab-label { color: var(--fc-purple); }
+  .app-tab-item.active .app-tab-icon svg { fill: var(--fc-purple); stroke: var(--fc-purple); }
+
+  /* HOME SCREEN */
+  .home-screen { padding: 50px 18px 20px; font-family: 'DM Sans', sans-serif; }
+  .home-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+  .home-greeting { font-size: 22px; font-weight: 700; color: #fff; }
+  .home-subtitle { font-size: 15px; font-weight: 700; color: #7C7A93; margin-bottom: 24px; max-width: 200px; }
+  .header-actions { display: flex; gap: 10px; }
+  .action-btn { width: 38px; height: 38px; border-radius: 12px; background: #2F2B3A; display: flex; align-items: center; justify-content: center; }
+  .action-btn svg { width: 18px; height: 18px; }
+
+  /* Today's Drop */
+  .todays-drop-label { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+  .todays-drop {
+    background: #23232E; border: 2px solid #38384A; border-radius: 14px;
+    padding: 16px; margin-bottom: 20px;
+    box-shadow: 0 -5px 15px rgba(122,134,151,0.08);
+  }
+  .todays-drop-title { font-size: 15px; font-weight: 700; color: #8571FF; margin-bottom: 8px; }
+  .todays-drop-desc { font-size: 12px; color: #A09EB6; line-height: 1.5; }
+
+  /* News Section */
+  .news-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; margin-top: 10px; }
+  .news-section-title { font-size: 16px; font-weight: 700; color: #fff; }
+  .view-all { font-size: 12px; font-weight: 700; color: #8571FF; letter-spacing: 0.5px; }
+  .news-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 8px; scrollbar-width: none; }
+  .news-scroll::-webkit-scrollbar { display: none; }
+  .news-card {
+    flex-shrink: 0; width: 230px; min-height: 120px;
+    background: #2C2B3D; border-radius: 13px;
+    padding: 18px 16px 14px; position: relative;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .news-quote {
+    position: absolute; top: -10px; left: 18px;
+    width: 28px; height: 28px; background: #2C2B3D; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; color: #8571FF; font-weight: 700; line-height: 1;
+  }
+  .news-card-title { font-family: 'DM Sans', sans-serif; font-size: 13px; color: #ECF9FF; line-height: 1.55; margin-top: 4px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .news-card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+  .news-read-more { font-size: 11px; color: #8571FF; font-weight: 500; }
+  .news-source { font-size: 11px; color: #fff; display: flex; align-items: center; gap: 5px; }
+  .news-source-dot { width: 8px; height: 8px; border-radius: 3px; display: inline-block; }
+
+  /* Trending */
+  .trending-title { font-size: 17px; font-weight: 700; color: #fff; margin: 22px 0 16px; }
+
+  /* Post Item */
+  .post-item { padding: 20px 0; border-top: 1px solid rgba(188,193,207,0.1); position: relative; }
+  .post-user { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .post-avatar { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; }
+  .post-user-info { flex: 1; }
+  .post-user-row { display: flex; justify-content: space-between; align-items: center; }
+  .post-username { font-size: 12px; font-weight: 700; color: var(--fc-white); }
+  .post-verified { color: #1DA1F2; font-size: 12px; margin-left: 3px; }
+  .post-time { font-size: 10px; color: var(--fc-gray); }
+  .post-handle { font-size: 9px; color: var(--fc-gray); }
+  .post-body { padding-left: 44px; position: relative; }
+  .post-line { position: absolute; left: 16px; top: 0; bottom: -10px; width: 1px; background: rgba(148,101,246,0.3); }
+  .post-transaction { padding: 8px 12px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12px; font-weight: 500; }
+  .post-transaction.buy { background: rgba(56,201,118,0.2); color: var(--fc-green); }
+  .post-transaction.sell { background: rgba(254,80,80,0.1); color: var(--fc-red); }
+  .post-text { font-family: 'DM Sans', sans-serif; font-size: 12px; color: #ECF9FF; line-height: 1.65; margin-bottom: 10px; }
+  .post-text .ticker { color: var(--fc-purple); font-weight: 500; }
+  .post-reactions { display: flex; gap: 28px; padding-left: 44px; margin-top: 4px; }
+  .reaction { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #DFDCEF; font-weight: 700; }
+  .reaction svg { width: 14px; height: 14px; }
+  .reaction.liked svg { fill: #DD2E44; }
+  .post-comment { margin-top: 12px; padding-left: 44px; position: relative; }
+  .comment-line { position: absolute; left: 16px; top: -12px; height: calc(100% + 2px); width: 1px; background: rgba(148,101,246,0.3); }
+  .comment-user { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .comment-avatar { width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; }
+  .comment-name { font-size: 10px; font-weight: 700; color: var(--fc-white); }
+  .comment-text { font-family: 'DM Sans', sans-serif; font-size: 11px; color: #ECF9FF; line-height: 1.5; padding-left: 32px; margin-bottom: 2px; }
+  .read-more-comments { font-size: 11px; color: var(--fc-purple); font-weight: 500; padding-left: 44px; margin-top: 8px; }
+
+  /* FAB */
+  .fab {
+    position: absolute; bottom: 78px; right: 18px;
+    width: 50px; height: 50px; border-radius: 25px;
+    background: linear-gradient(135deg, #875BFF, #875BFF);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 25px rgba(135,91,255,0.4); z-index: 60;
+  }
+  .fab svg { width: 22px; height: 22px; }
+
+  /* EXPLORE SCREEN */
+  .explore-screen { padding: 50px 18px 20px; font-family: 'DM Sans', sans-serif; }
+  .explore-title { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 16px; }
+  .search-bar { width: 100%; height: 40px; background: #23232E; border-radius: 12px; display: flex; align-items: center; padding: 0 14px; gap: 10px; margin-bottom: 20px; }
+  .search-bar svg { width: 16px; height: 16px; opacity: 0.5; }
+  .search-placeholder { font-size: 13px; color: var(--fc-gray); font-weight: 400; }
+  .search-tabs { display: flex; gap: 6px; margin-left: auto; }
+  .search-tab { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; color: var(--fc-gray); }
+  .search-tab.active { background: var(--fc-purple); color: #fff; }
+
+  /* Switch Tabs */
+  .company-switch { display: flex; gap: 0; margin-bottom: 16px; background: #23232E; border-radius: 12px; overflow: hidden; }
+  .switch-btn { flex: 1; padding: 10px; text-align: center; font-size: 13px; font-weight: 700; color: var(--fc-gray); transition: all 0.3s; }
+  .switch-btn.active { background: var(--fc-purple); color: #fff; border-radius: 12px; }
+
+  /* Company Cards */
+  .company-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
+  .company-scroll::-webkit-scrollbar { display: none; }
+  .company-card { flex-shrink: 0; width: 120px; background: var(--fc-card); border-radius: 18px; padding: 14px 10px; text-align: center; }
+  .company-logo { width: 48px; height: 48px; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; }
+  .company-name { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; color: #fff; margin-bottom: 6px; min-height: 36px; display: flex; align-items: center; justify-content: center; }
+  .company-change { font-size: 14px; font-weight: 500; }
+  .company-change.up { color: var(--fc-green); }
+  .company-change.down { color: var(--fc-red); }
+
+  /* Section Headers */
+  .phones-showcase .section-header { display: flex; justify-content: space-between; align-items: center; margin: 22px 0 10px; }
+  .phones-showcase .section-title { font-size: 15px; font-weight: 700; color: #FCFCFC; }
+
+  /* Theme Chips */
+  .theme-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .theme-chip { padding: 10px 16px; background: var(--fc-card); border-radius: 14px; font-size: 12px; font-weight: 700; color: #fff; white-space: nowrap; display: flex; align-items: center; gap: 5px; }
+
+  /* People Section */
+  .people-scroll { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; }
+  .people-scroll::-webkit-scrollbar { display: none; }
+  .people-card { flex-shrink: 0; width: 120px; background: var(--fc-card); border-radius: 18px; padding: 14px; text-align: center; }
+  .people-avatar { width: 44px; height: 44px; border-radius: 50%; margin: 0 auto 10px; }
+  .people-name { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; color: #fff; min-height: 36px; display: flex; align-items: center; justify-content: center; line-height: 1.3; }
+  .people-action { font-size: 13px; font-weight: 500; color: var(--fc-purple); margin-top: 4px; }
+  .people-card.followed { border: 1px solid var(--fc-purple); }
+
+  /* Stock Detail */
+  .stock-overlay { background: var(--fc-card); border-radius: 16px; padding: 18px; margin-top: 20px; }
+  .stock-header-detail { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+  .stock-logo-lg { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; }
+  .stock-name-col { flex: 1; }
+  .stock-name-lg { font-size: 17px; font-weight: 700; color: #FCFCFC; }
+  .stock-ticker { font-size: 12px; color: var(--fc-gray); margin-top: 2px; }
+  .stock-price-lg { font-family: 'DM Sans', sans-serif; font-size: 32px; font-weight: 700; color: #FCFCFC; text-align: center; margin-bottom: 4px; letter-spacing: -1px; }
+  .stock-change-row { text-align: center; font-size: 14px; font-weight: 700; margin-bottom: 16px; }
+
+  /* Chart */
+  .chart-area { width: 100%; height: 130px; position: relative; margin-bottom: 14px; overflow: hidden; }
+  .chart-line { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; }
+  .timeframe-row { display: flex; justify-content: center; gap: 8px; margin-bottom: 18px; }
+  .tf-btn { padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; color: var(--fc-gray); background: transparent; }
+  .tf-btn.active { background: var(--fc-purple); color: #fff; }
+
+  .stock-buttons { display: flex; gap: 10px; }
+  .stock-btn { flex: 1; padding: 12px; border-radius: 12px; text-align: center; font-size: 14px; font-weight: 700; }
+  .stock-btn.buy { background: var(--fc-green); color: #fff; }
+  .stock-btn.sell-btn { background: #2F2B3A; color: var(--fc-white); }
+
+  /* Sentiment */
+  .sentiment-section { margin-top: 18px; }
+  .sentiment-title { font-size: 14px; font-weight: 700; color: var(--fc-white); margin-bottom: 12px; }
+  .sentiment-bar-wrap { display: flex; gap: 2px; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+  .sentiment-bull { background: var(--fc-green); border-radius: 4px 0 0 4px; }
+  .sentiment-bear { background: var(--fc-red); border-radius: 0 4px 4px 0; }
+  .sentiment-labels { display: flex; justify-content: space-between; font-size: 11px; font-weight: 500; }
+  .sentiment-labels .bull { color: var(--fc-green); }
+  .sentiment-labels .bear { color: var(--fc-red); }
+
+  /* About Card */
+  .about-card-phone { background: #23232E; border-radius: 13px; padding: 16px; margin-top: 18px; }
+  .about-heading { font-size: 15px; font-weight: 700; color: var(--fc-white); margin-bottom: 10px; }
+  .about-text-phone { font-family: 'DM Sans', sans-serif; font-size: 12px; color: #A09EB6; line-height: 1.6; }
+
+  /* Related */
+  .related-section { margin-top: 20px; }
+  .related-title { font-size: 14px; font-weight: 700; color: var(--fc-white); margin-bottom: 12px; }
+
+  /* Phone animations */
+  @keyframes phoneUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .phone-col:nth-child(1) { animation: phoneUp 0.8s 0.1s both; }
+  .phone-col:nth-child(2) { animation: phoneUp 0.8s 0.3s both; }
+  .phone-col:nth-child(3) { animation: phoneUp 0.8s 0.5s both; }
+
+  /* ── BACK CTA ── */
+  .case-footer { padding: 4rem 2rem; text-align: center; }
+  .btn-back {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.85rem 1.75rem; border-radius: 50px;
+    font-size: 0.9rem; font-weight: 600; text-decoration: none;
+    background: var(--text); color: #fff; transition: all 0.3s;
+  }
+  .btn-back:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(45,91,255,0.18); }
+  .btn-back svg { width: 16px; height: 16px; }
+
+  footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--text-secondary); }
+
+  /* ── ANIMATIONS ── */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1100px) {
+    .phones-row { gap: 30px; }
+  }
+  @media (max-width: 900px) {
+    .stats-row { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr; }
+    .phones-row { gap: 40px; }
+    .phone-frame { width: 300px; height: 640px; }
+  }
+  @media (max-width: 600px) {
+    .case-hero { padding: 7rem 1.25rem 3rem; }
+    .case-section, .phones-showcase { padding: 3rem 1.25rem; }
+    .phones-row { gap: 40px; }
+    .phone-frame { width: 290px; height: 620px; }
+    .case-meta { gap: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">devika<span>.</span></a>
+    <a href="index.html#projects" class="back-link">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"/></svg>
+      Back to Home
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="case-hero">
+  <div class="container">
+    <div class="case-eyebrow">Case Study &middot; Head of Product</div>
+    <h1>FilterCoffee — <em>your market pulse, brewed fresh daily</em></h1>
+    <p class="case-subtitle">A social investing platform where community discussions meet real-time market data. I lead product strategy for this early-stage media startup in India, building the tools and growth engine behind 15,000+ organic subscribers.</p>
+    <div class="case-meta">
+      <div class="meta-item"><span class="meta-label">Role</span><span class="meta-value">Head of Product</span></div>
+      <div class="meta-item"><span class="meta-label">Type</span><span class="meta-value">Mobile App &middot; Media Startup</span></div>
+      <div class="meta-item"><span class="meta-label">Market</span><span class="meta-value">India &middot; APAC</span></div>
+      <div class="meta-item"><span class="meta-label">Status</span><span class="meta-value">Active &middot; Growing</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="case-section">
+  <div class="container">
+    <div class="stats-row reveal">
+      <div class="stat-card"><div class="stat-num">15K+</div><div class="stat-label">Organic Subscribers</div></div>
+      <div class="stat-card"><div class="stat-num">0&#8594;1</div><div class="stat-label">Product Built from Scratch</div></div>
+      <div class="stat-card"><div class="stat-num">3x</div><div class="stat-label">Engagement Growth</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- VISION -->
+<section class="case-section alt">
+  <div class="container narrow reveal">
+    <h2>The vision</h2>
+    <p>India's retail investing boom has brought millions of new investors into the market — but most apps focus purely on transactions, leaving users without context, community, or clarity on what's driving markets.</p>
+    <p>FilterCoffee was born from a simple insight: investors don't just want to trade — they want to understand. We built a platform that blends curated financial news, community-driven discussions, and real-time market data into a single daily experience. Think of it as your morning market briefing — brewed fresh, served social.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     APP UI SCREENSHOTS — PHONE MOCKUPS
+     ═══════════════════════════════════════════ -->
+<section class="phones-showcase">
+  <div class="container">
+    <h2 class="reveal">The app experience</h2>
+    <p class="subtitle reveal">Three core screens that power the daily investing ritual</p>
+
+    <div class="phones-row">
+
+      <!-- ===== HOME SCREEN ===== -->
+      <div class="phone-col reveal">
+        <div class="phone-label-top">Home Feed</div>
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <div class="home-screen">
+
+              <div class="home-header">
+                <div>
+                  <div class="home-greeting">Hi&#128075; Arjun</div>
+                </div>
+                <div class="header-actions">
+                  <div class="action-btn">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="#9C9EB8" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                  </div>
+                  <div class="action-btn" style="position:relative;">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="#9C9EB8" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+                    <div style="width:6px;height:6px;border-radius:50%;background:#38C976;position:absolute;top:8px;right:8px;"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="home-subtitle">Let's have a look at what's brewing</div>
+
+              <!-- Today's Drop -->
+              <div class="todays-drop-label">Today's drop</div>
+              <div class="todays-drop">
+                <div class="todays-drop-title">Why Zomato's EBITDA surprised everyone</div>
+                <div class="todays-drop-desc">An analysis of Zomato's Q3 results and what it means for quick commerce investors</div>
+              </div>
+
+              <!-- News -->
+              <div class="news-section-header">
+                <div class="news-section-title">News</div>
+                <div class="view-all">View all</div>
+              </div>
+              <div class="news-scroll">
+                <div class="news-card">
+                  <div class="news-quote">"</div>
+                  <div class="news-card-title">RBI holds repo rate steady at 6.5% for sixth consecutive time amid global uncertainty</div>
+                  <div class="news-card-footer">
+                    <span class="news-read-more">Read more</span>
+                    <span class="news-source"><span class="news-source-dot" style="background:#E25454;"></span> Mint</span>
+                  </div>
+                </div>
+                <div class="news-card">
+                  <div class="news-quote">"</div>
+                  <div class="news-card-title">Tech Mahindra reports 28% jump in Q3 net profit, beats Street expectations</div>
+                  <div class="news-card-footer">
+                    <span class="news-read-more">Read more</span>
+                    <span class="news-source"><span class="news-source-dot" style="background:#1DA1F2;"></span> ET</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Trending -->
+              <div class="trending-title">Trending &#128293;</div>
+
+              <!-- Post 1 -->
+              <div class="post-item">
+                <div class="post-user">
+                  <div class="post-avatar" style="background: linear-gradient(135deg, #6366F1, #8B5CF6);"></div>
+                  <div class="post-user-info">
+                    <div class="post-user-row">
+                      <span class="post-username">Priya Sharma <span class="post-verified">&#10003;</span></span>
+                      <span class="post-time">2h ago</span>
+                    </div>
+                    <div class="post-handle">@priyasharma</div>
+                  </div>
+                </div>
+                <div class="post-body">
+                  <div class="post-line"></div>
+                  <div class="post-transaction buy">
+                    <span>Bought 15 shares of Infosys</span>
+                    <span style="font-size:16px;">&#128200;</span>
+                  </div>
+                  <div class="post-text">
+                    Strong quarterly results and <span class="ticker">$INFY</span> guidance revision looks really promising. Adding to my position here. Long term hold &#128640;
+                  </div>
+                </div>
+                <div class="post-reactions">
+                  <div class="reaction liked">
+                    <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    <span>24</span>
+                  </div>
+                  <div class="reaction">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="#DFDCEF" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                    <span>8</span>
+                  </div>
+                </div>
+                <!-- Comment -->
+                <div class="post-comment">
+                  <div class="comment-line"></div>
+                  <div class="comment-user">
+                    <div class="comment-avatar" style="background: linear-gradient(135deg, #059669, #34D399);"></div>
+                    <span class="comment-name">Rohan M.</span>
+                  </div>
+                  <div class="comment-text">Agree! Their cloud business is going to be the real growth engine &#128170;</div>
+                </div>
+                <div class="read-more-comments">Read 6 more comments</div>
+              </div>
+
+              <!-- Post 2 -->
+              <div class="post-item">
+                <div class="post-user">
+                  <div class="post-avatar" style="background: linear-gradient(135deg, #EC4899, #F472B6);"></div>
+                  <div class="post-user-info">
+                    <div class="post-user-row">
+                      <span class="post-username">Aditya Verma</span>
+                      <span class="post-time">5h ago</span>
+                    </div>
+                    <div class="post-handle">@adityav</div>
+                  </div>
+                </div>
+                <div class="post-body">
+                  <div class="post-text">
+                    Anyone tracking <span class="ticker">$TATAMOTORS</span> after the JLR numbers? The EV pivot is interesting but margins concern me. What do you all think?
+                  </div>
+                </div>
+                <div class="post-reactions">
+                  <div class="reaction">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="#DFDCEF" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    <span>12</span>
+                  </div>
+                  <div class="reaction">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="#DFDCEF" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                    <span>15</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- FAB -->
+          <div class="fab">
+            <svg fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </div>
+
+          <!-- Tab Bar -->
+          <div class="app-tab-bar">
+            <div class="app-tab-item active">
+              <div class="app-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fc-purple)" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div>
+              <span class="app-tab-label">Home</span>
+            </div>
+            <div class="app-tab-item">
+              <div class="app-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7C7A93" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div>
+              <span class="app-tab-label">Explore</span>
+            </div>
+            <div class="app-tab-item">
+              <div class="app-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7C7A93" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>
+              <span class="app-tab-label">Media</span>
+            </div>
+            <div class="app-tab-item">
+              <div class="app-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7C7A93" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4-4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+              <span class="app-tab-label">Profile</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== EXPLORE / STOCK DETAIL SCREEN ===== -->
+      <div class="phone-col reveal reveal-delay-1">
+        <div class="phone-label-top">Explore &amp; Stocks</div>
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <div class="explore-screen">
+
+              <div class="explore-title">Explore</div>
+
+              <div class="search-bar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#9C9EB8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                <span class="search-placeholder">Search stocks, themes, people...</span>
+                <div class="search-tabs">
+                  <span class="search-tab active">P</span>
+                  <span class="search-tab">T</span>
+                  <span class="search-tab">S</span>
+                </div>
+              </div>
+
+              <div class="company-switch">
+                <div class="switch-btn active">Top Gainers</div>
+                <div class="switch-btn">Top Losers</div>
+              </div>
+
+              <div class="company-scroll">
+                <div class="company-card">
+                  <div class="company-logo" style="background: linear-gradient(135deg, #1e40af, #3b82f6); color: #fff;">T</div>
+                  <div class="company-name">Tata<br>Consultancy</div>
+                  <div class="company-change up">+3.42%</div>
+                </div>
+                <div class="company-card">
+                  <div class="company-logo" style="background: linear-gradient(135deg, #15803d, #4ade80); color: #fff;">R</div>
+                  <div class="company-name">Reliance<br>Industries</div>
+                  <div class="company-change up">+2.18%</div>
+                </div>
+                <div class="company-card">
+                  <div class="company-logo" style="background: linear-gradient(135deg, #9333ea, #c084fc); color: #fff;">I</div>
+                  <div class="company-name">Infosys<br>Ltd.</div>
+                  <div class="company-change up">+1.87%</div>
+                </div>
+              </div>
+
+              <!-- Hot Themes -->
+              <div class="section-header">
+                <span class="section-title">Hot themes&#9889;</span>
+                <span class="view-all">View all</span>
+              </div>
+              <div class="theme-chips">
+                <div class="theme-chip">&#127974; Banking</div>
+                <div class="theme-chip">&#128138; Pharma</div>
+                <div class="theme-chip">&#9889; EV</div>
+                <div class="theme-chip">&#128722; FMCG</div>
+                <div class="theme-chip">&#128187; IT Services</div>
+                <div class="theme-chip">&#127959;&#65039; Infra</div>
+              </div>
+
+              <!-- Mid Cap Movers -->
+              <div class="section-header">
+                <span class="section-title">Mid Cap Movers</span>
+                <span class="view-all">View all</span>
+              </div>
+              <div class="company-scroll">
+                <div class="company-card">
+                  <div class="company-logo" style="background: linear-gradient(135deg, #b91c1c, #f87171); color: #fff;">Z</div>
+                  <div class="company-name">Zomato<br>Ltd.</div>
+                  <div class="company-change up">+5.21%</div>
+                </div>
+                <div class="company-card">
+                  <div class="company-logo" style="background: linear-gradient(135deg, #a16207, #fbbf24); color: #fff;">P</div>
+                  <div class="company-name">Paytm</div>
+                  <div class="company-change down">-1.32%</div>
+                </div>
+                <div class="company-card">
+                  <div class="company-logo" style="background: linear-gradient(135deg, #0e7490, #22d3ee); color: #fff;">N</div>
+                  <div class="company-name">Nykaa</div>
+                  <div class="company-change up">+2.45%</div>
+                </div>
+              </div>
+
+              <!-- People -->
+              <div class="section-header">
+                <span class="section-title">People&#127881;</span>
+                <span class="view-all">View all</span>
+              </div>
+              <div class="people-scroll">
+                <div class="people-card followed">
+                  <div class="people-avatar" style="background: linear-gradient(135deg, #7C3AED, #A78BFA);"></div>
+                  <div class="people-name">Meera<br>Patel</div>
+                  <div class="people-action">Unfollow</div>
+                </div>
+                <div class="people-card">
+                  <div class="people-avatar" style="background: linear-gradient(135deg, #DC2626, #FB7185);"></div>
+                  <div class="people-name">Karthik<br>Rao</div>
+                  <div class="people-action">Follow</div>
+                </div>
+                <div class="people-card">
+                  <div class="people-avatar" style="background: linear-gradient(135deg, #0284C7, #38BDF8);"></div>
+                  <div class="people-name">Sneha<br>Iyer</div>
+                  <div class="people-action">Follow</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Tab Bar -->
+          <div class="app-tab-bar">
+            <div class="app-tab-item">
+              <div class="app-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7C7A93" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div>
+              <span class="app-tab-label">Home</span>
+            </div>
+            <div class="app-tab-item active">
+              <div class="app-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fc-purple)" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div>
+              <span class="app-tab-label">Explore</span>
+            </div>
+            <div class="app-tab-item">
+              <div class="app-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7C7A93" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>
+              <span class="app-tab-label">Media</span>
+            </div>
+            <div class="app-tab-item">
+              <div class="app-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7C7A93" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4-4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+              <span class="app-tab-label">Profile</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== STOCK DETAIL SCREEN ===== -->
+      <div class="phone-col reveal reveal-delay-2">
+        <div class="phone-label-top">Stock Detail</div>
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <div class="explore-screen">
+
+              <!-- Back button -->
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#9C9EB8" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                <span style="font-size:14px;color:var(--fc-gray);font-weight:500;">Back</span>
+              </div>
+
+              <!-- Stock Header -->
+              <div class="stock-header-detail">
+                <div class="stock-logo-lg" style="background: linear-gradient(135deg, #1e40af, #60a5fa); color: #fff;">R</div>
+                <div class="stock-name-col">
+                  <div class="stock-name-lg">Reliance Industries</div>
+                  <div class="stock-ticker">RELIANCE &middot; NSE</div>
+                </div>
+              </div>
+
+              <!-- Price -->
+              <div class="stock-price-lg">&#8377;2,847.35</div>
+              <div class="stock-change-row" style="color:var(--fc-green);">+&#8377;42.15 (+1.50%) today</div>
+
+              <!-- Chart -->
+              <div class="chart-area">
+                <svg class="chart-line" viewBox="0 0 280 130" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#38C976" stop-opacity="0.3"/>
+                      <stop offset="100%" stop-color="#38C976" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M0,95 C20,88 35,92 55,78 C75,64 90,82 110,65 C130,48 145,60 165,42 C185,24 200,38 220,28 C240,18 255,25 280,15" fill="none" stroke="var(--fc-green)" stroke-width="2.5"/>
+                  <path d="M0,95 C20,88 35,92 55,78 C75,64 90,82 110,65 C130,48 145,60 165,42 C185,24 200,38 220,28 C240,18 255,25 280,15 L280,130 L0,130 Z" fill="url(#chartGrad)"/>
+                  <circle cx="220" cy="28" r="5" fill="var(--fc-green)" stroke="#17171F" stroke-width="2"/>
+                </svg>
+                <div style="position:absolute;left:78.5%;top:10%;bottom:0;width:1px;background:var(--fc-purple);opacity:0.6;"></div>
+              </div>
+
+              <!-- Timeframes -->
+              <div class="timeframe-row">
+                <div class="tf-btn">1D</div>
+                <div class="tf-btn">1W</div>
+                <div class="tf-btn">1M</div>
+                <div class="tf-btn">1Y</div>
+                <div class="tf-btn active">ALL</div>
+              </div>
+
+              <!-- Buy / Sell -->
+              <div class="stock-buttons">
+                <div class="stock-btn buy">Buy</div>
+                <div class="stock-btn sell-btn">Add to Watchlist</div>
+              </div>
+
+              <!-- Sentiment -->
+              <div class="sentiment-section">
+                <div class="sentiment-title">Community Sentiment</div>
+                <div class="sentiment-bar-wrap">
+                  <div class="sentiment-bull" style="width:72%;"></div>
+                  <div class="sentiment-bear" style="width:28%;"></div>
+                </div>
+                <div class="sentiment-labels">
+                  <span class="bull">72% Bullish</span>
+                  <span class="bear">28% Bearish</span>
+                </div>
+              </div>
+
+              <!-- About -->
+              <div class="about-card-phone">
+                <div class="about-heading">About Reliance</div>
+                <div class="about-text-phone">
+                  Reliance Industries Limited is an Indian multinational conglomerate with businesses spanning energy, petrochemicals, natural gas, retail, telecommunications, and digital services. Its subsidiary Jio Platforms has transformed India's telecom landscape.
+                </div>
+              </div>
+
+              <!-- Related Companies -->
+              <div class="related-section">
+                <div class="related-title">Related Companies</div>
+                <div class="company-scroll">
+                  <div class="company-card">
+                    <div class="company-logo" style="background: linear-gradient(135deg, #0f766e, #2dd4bf); color: #fff;">A</div>
+                    <div class="company-name">Adani<br>Enterprises</div>
+                    <div class="company-change up">+1.12%</div>
+                  </div>
+                  <div class="company-card">
+                    <div class="company-logo" style="background: linear-gradient(135deg, #7e22ce, #d8b4fe); color: #fff;">B</div>
+                    <div class="company-name">Bharti<br>Airtel</div>
+                    <div class="company-change down">-0.45%</div>
+                  </div>
+                  <div class="company-card">
+                    <div class="company-logo" style="background: linear-gradient(135deg, #b45309, #fbbf24); color: #fff;">I</div>
+                    <div class="company-name">ITC<br>Ltd.</div>
+                    <div class="company-change up">+0.78%</div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="height: 30px;"></div>
+
+            </div>
+          </div>
+
+          <!-- Tab Bar -->
+          <div class="app-tab-bar">
+            <div class="app-tab-item">
+              <div class="app-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7C7A93" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div>
+              <span class="app-tab-label">Home</span>
+            </div>
+            <div class="app-tab-item active">
+              <div class="app-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--fc-purple)" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div>
+              <span class="app-tab-label">Explore</span>
+            </div>
+            <div class="app-tab-item">
+              <div class="app-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7C7A93" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>
+              <span class="app-tab-label">Media</span>
+            </div>
+            <div class="app-tab-item">
+              <div class="app-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7C7A93" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4-4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+              <span class="app-tab-label">Profile</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ROLE -->
+<section class="case-section">
+  <div class="container narrow reveal">
+    <h2>My role &amp; approach</h2>
+    <p>As Head of Product, I own the full product lifecycle — from discovery and user research through design, development prioritization, and growth strategy. I work closely with a small, cross-functional team spanning engineering, design, and content.</p>
+    <p>We validated the core concept through a newsletter MVP, then expanded into a fully featured mobile app as engagement signals confirmed product-market fit. Every feature decision is grounded in user behavior data and direct community feedback.</p>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="case-section alt">
+  <div class="container">
+    <h2 class="reveal">What we built</h2>
+    <div class="features-grid">
+      <div class="feature-card reveal"><div class="feature-icon">&#9749;</div><h3>Daily Market Drops</h3><p>Curated daily briefings that distill complex market movements into clear, digestible stories — from RBI policy to quarterly earnings surprises.</p></div>
+      <div class="feature-card reveal reveal-delay-1"><div class="feature-icon">&#128172;</div><h3>Community Discussions</h3><p>A social layer where investors share trades, debate theses, and react to news in real time — building conviction through collective intelligence.</p></div>
+      <div class="feature-card reveal reveal-delay-2"><div class="feature-icon">&#128200;</div><h3>Real-Time Market Data</h3><p>Live stock data, company profiles, and related company discovery — context alongside the conversation.</p></div>
+      <div class="feature-card reveal reveal-delay-3"><div class="feature-icon">&#127775;</div><h3>Content-Led Growth</h3><p>High-quality financial content that drives subscribers without paid acquisition, growing to 15K+ organically.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- LEARNINGS -->
+<section class="case-section">
+  <div class="container narrow reveal">
+    <h2>Key learnings</h2>
+    <p>Building FilterCoffee reinforced a conviction I carry into all my product work: the best products create a habit. By anchoring the experience around a daily ritual (the morning "drop"), we built retention into the core loop rather than relying on notifications or gamification.</p>
+    <p>The biggest unlock was treating content as product. Rather than bolting a content layer onto a data app, we designed the entire experience around the narrative — market data serves the story, not the other way around. This content-first approach has been the primary driver of our organic growth.</p>
+  </div>
+</section>
+
+<!-- BACK -->
+<section class="case-footer">
+  <a href="index.html#projects" class="btn-back">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"/></svg>
+    Back to Home
+  </a>
+</section>
+
+<footer><p>&copy; 2026 Devika Naik. Crafted in New York.</p></footer>
+
+<script>
+  var mainNav = document.getElementById('mainNav');
+  window.addEventListener('scroll', function() { mainNav.classList.toggle('scrolled', window.scrollY > 40); });
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+</script>
+</body>
+</html>

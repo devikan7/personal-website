@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KnowYourStocks — Case Study | Devika Naik</title>
+<meta name="description" content="KnowYourStocks — An AI-powered investment analysis platform. Product case study by Devika Naik.">
+<meta name="theme-color" content="#FAF9F7">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #FAF9F7;
+    --bg-alt: #F1EFEB;
+    --text: #1A1A1A;
+    --text-secondary: #5A5A5A;
+    --accent: #2D5BFF;
+    --accent-soft: rgba(45, 91, 255, 0.08);
+    --border: #E2E0DC;
+    --card-bg: #FFFFFF;
+    --ks-emerald: #10B981;
+    --ks-teal: #14B8A6;
+    --ks-blue: #3B82F6;
+    --ks-purple: #8B5CF6;
+    --ks-orange: #F59E0B;
+    --ks-red: #EF4444;
+    --ks-dark: #0F172A;
+    --ks-dark-card: #1E293B;
+    --ks-dark-border: #334155;
+    --ks-dark-text: #94A3B8;
+    --ks-dark-bright: #E2E8F0;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg); color: var(--text);
+    line-height: 1.7; -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--accent); color: #fff; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(250,249,247,0.85);
+    backdrop-filter: blur(20px) saturate(1.8);
+    -webkit-backdrop-filter: blur(20px) saturate(1.8);
+    border-bottom: 1px solid var(--border);
+    transition: var(--transition);
+  }
+  nav.scrolled { background: rgba(250,249,247,0.95); box-shadow: 0 1px 12px rgba(0,0,0,0.04); }
+  .nav-inner {
+    max-width: 1140px; margin: 0 auto; padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between; height: 64px;
+  }
+  .nav-logo { font-weight: 700; font-size: 1.1rem; letter-spacing: -0.02em; color: var(--text); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .back-link { font-size: 0.85rem; font-weight: 500; color: var(--text-secondary); text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; transition: color 0.3s; }
+  .back-link:hover { color: var(--accent); }
+  .back-link svg { width: 16px; height: 16px; }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 1140px; margin: 0 auto; padding: 0 2rem; }
+  .narrow { max-width: 760px; }
+
+  /* ── CASE HERO ── */
+  .case-hero {
+    padding: 8rem 2rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .case-hero::before {
+    content: ''; position: absolute; top: -100px; right: -60px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(16,185,129,0.06) 0%, transparent 65%);
+    border-radius: 50%; pointer-events: none;
+  }
+  .case-eyebrow {
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--ks-emerald); margin-bottom: 1.25rem;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .case-eyebrow::before { content: ''; width: 20px; height: 2px; background: var(--ks-emerald); }
+  .case-hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 4.5vw, 3.5rem); font-weight: 500;
+    line-height: 1.15; letter-spacing: -0.03em; margin-bottom: 1.5rem;
+  }
+  .case-hero h1 em {
+    font-style: italic;
+    background: linear-gradient(135deg, var(--ks-emerald), var(--ks-blue));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .case-subtitle {
+    font-size: 1.15rem; color: var(--text-secondary);
+    max-width: 600px; line-height: 1.85; margin-bottom: 2.5rem;
+  }
+  .case-meta { display: flex; gap: 3rem; flex-wrap: wrap; }
+  .meta-item { display: flex; flex-direction: column; gap: 0.25rem; }
+  .meta-label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-secondary); }
+  .meta-value { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+
+  /* ── CASE SECTIONS ── */
+  .case-section { padding: 4rem 2rem; }
+  .case-section.alt { background: var(--bg-alt); }
+  .case-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3vw, 2.2rem); font-weight: 500;
+    letter-spacing: -0.02em; margin-bottom: 1.5rem; line-height: 1.25;
+  }
+  .case-section p { color: var(--text-secondary); font-size: 1.02rem; line-height: 1.85; margin-bottom: 1.25rem; }
+  .case-section p:last-child { margin-bottom: 0; }
+
+  /* ── STATS ── */
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin: 3rem 0; }
+  .stat-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 2rem; text-align: center; transition: var(--transition);
+  }
+  .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
+  .stat-num {
+    font-family: 'Playfair Display', serif; font-size: 2.4rem; font-weight: 500; margin-bottom: 0.3rem;
+    background: linear-gradient(135deg, var(--ks-emerald), var(--ks-blue));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .stat-label { font-size: 0.82rem; color: var(--text-secondary); font-weight: 500; }
+
+  /* ── FEATURES GRID ── */
+  .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin: 2.5rem 0; }
+  .feature-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 2rem; transition: var(--transition);
+    position: relative; overflow: hidden;
+  }
+  .feature-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--ks-emerald), var(--ks-blue));
+    transform: scaleX(0); transform-origin: left; transition: transform 0.5s ease;
+  }
+  .feature-card:hover::before { transform: scaleX(1); }
+  .feature-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
+  .feature-icon {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(59,130,246,0.1));
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1rem; font-size: 1.3rem;
+  }
+  .feature-card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .feature-card p { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.65; margin-bottom: 0; }
+
+  /* ══════════════════════════════════════════
+     PRODUCT SHOWCASE — TWO-PANEL UI
+     ══════════════════════════════════════════ */
+  .product-showcase {
+    padding: 5rem 2rem;
+    background: var(--ks-dark);
+    overflow: hidden; position: relative;
+  }
+  .product-showcase::before {
+    content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+    width: 900px; height: 900px;
+    background: radial-gradient(ellipse, rgba(16,185,129,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .product-showcase h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3vw, 2.2rem); font-weight: 500;
+    color: var(--ks-dark-bright); text-align: center; margin-bottom: 0.5rem;
+    position: relative;
+  }
+  .product-showcase .showcase-subtitle {
+    color: var(--ks-dark-text); font-size: 1rem;
+    text-align: center; margin-bottom: 3.5rem; position: relative;
+  }
+
+  .showcase-panels {
+    display: flex; flex-direction: column; gap: 4rem;
+    position: relative; z-index: 1;
+  }
+
+  .panel-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 2px;
+    color: var(--ks-dark-text); text-align: center;
+    margin-bottom: 20px;
+  }
+
+  /* ── Shared App Frame ── */
+  .app-frame {
+    width: 100%; max-width: 920px; margin: 0 auto;
+    background: var(--ks-dark-card);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.04);
+    transition: transform 0.5s cubic-bezier(0.23,1,0.32,1), box-shadow 0.5s ease;
+    font-family: 'Inter', sans-serif;
+  }
+  .app-frame:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 40px 100px rgba(0,0,0,0.5), 0 0 0 1px rgba(16,185,129,0.12);
+  }
+
+  /* Title bar */
+  .frame-titlebar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 18px;
+    background: rgba(0,0,0,0.25);
+    border-bottom: 1px solid var(--ks-dark-border);
+  }
+  .frame-dots { display: flex; gap: 7px; }
+  .frame-dots span { width: 12px; height: 12px; border-radius: 50%; }
+  .frame-dots span:nth-child(1) { background: #EF4444; }
+  .frame-dots span:nth-child(2) { background: #F59E0B; }
+  .frame-dots span:nth-child(3) { background: #22C55E; }
+  .frame-url {
+    font-size: 11px; color: var(--ks-dark-text);
+    background: rgba(0,0,0,0.3); border-radius: 6px;
+    padding: 4px 14px; font-weight: 500;
+  }
+  .frame-titlebar-right { width: 52px; }
+
+  /* ── ADMIN DASHBOARD ── */
+  .admin-layout {
+    display: flex; min-height: 480px;
+  }
+
+  /* Sidebar */
+  .admin-sidebar {
+    width: 200px; flex-shrink: 0;
+    background: rgba(0,0,0,0.2);
+    border-right: 1px solid var(--ks-dark-border);
+    padding: 20px 0;
+  }
+  .sidebar-brand {
+    padding: 0 16px 16px;
+    border-bottom: 1px solid var(--ks-dark-border);
+    margin-bottom: 12px;
+  }
+  .sidebar-brand .brand-name {
+    font-size: 14px; font-weight: 700; color: var(--ks-dark-bright);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .sidebar-brand .brand-name .logo-icon {
+    width: 20px; height: 20px; border-radius: 5px;
+    background: linear-gradient(135deg, var(--ks-emerald), var(--ks-blue));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: #fff;
+  }
+  .sidebar-brand .brand-sub {
+    font-size: 10px; color: var(--ks-dark-text); margin-top: 2px; padding-left: 26px;
+  }
+  .sidebar-nav-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 16px; font-size: 12px; font-weight: 500;
+    color: var(--ks-dark-text); cursor: default;
+    transition: all 0.2s; border-left: 2px solid transparent;
+  }
+  .sidebar-nav-item:hover { color: var(--ks-dark-bright); background: rgba(255,255,255,0.03); }
+  .sidebar-nav-item.active {
+    color: var(--ks-emerald); background: rgba(16,185,129,0.06);
+    border-left-color: var(--ks-emerald);
+  }
+  .sidebar-nav-item svg { width: 14px; height: 14px; opacity: 0.7; }
+  .sidebar-nav-item.active svg { opacity: 1; }
+
+  /* Admin Main */
+  .admin-main { flex: 1; padding: 20px 24px; overflow: hidden; }
+  .admin-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .admin-header h3 {
+    font-size: 16px; font-weight: 700; color: var(--ks-dark-bright);
+  }
+  .admin-header .upload-btn {
+    font-size: 11px; font-weight: 600;
+    padding: 6px 14px; border-radius: 6px;
+    background: linear-gradient(135deg, var(--ks-emerald), var(--ks-teal));
+    color: #fff; display: flex; align-items: center; gap: 5px;
+  }
+  .admin-header .upload-btn svg { width: 12px; height: 12px; }
+
+  /* Ingestion Stats Row */
+  .ingest-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+    margin-bottom: 18px;
+  }
+  .ingest-stat {
+    background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px;
+    border: 1px solid var(--ks-dark-border);
+  }
+  .ingest-stat .is-num {
+    font-size: 20px; font-weight: 700; color: var(--ks-dark-bright);
+    line-height: 1.2;
+  }
+  .ingest-stat .is-label {
+    font-size: 10px; color: var(--ks-dark-text); font-weight: 500;
+    margin-top: 2px;
+  }
+
+  /* Transcript Table */
+  .transcript-table {
+    width: 100%; border-collapse: collapse;
+  }
+  .transcript-table thead th {
+    font-size: 10px; font-weight: 600; color: var(--ks-dark-text);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 8px 10px; text-align: left;
+    border-bottom: 1px solid var(--ks-dark-border);
+    white-space: nowrap;
+  }
+  .transcript-table tbody td {
+    font-size: 12px; color: var(--ks-dark-bright);
+    padding: 10px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    white-space: nowrap;
+  }
+  .transcript-table tbody tr:hover {
+    background: rgba(255,255,255,0.02);
+  }
+  .t-type {
+    font-size: 10px; font-weight: 600; padding: 2px 8px;
+    border-radius: 4px; display: inline-block;
+  }
+  .t-type.earnings { background: rgba(59,130,246,0.15); color: var(--ks-blue); }
+  .t-type.interview { background: rgba(139,92,246,0.15); color: var(--ks-purple); }
+  .t-type.analyst { background: rgba(245,158,11,0.15); color: var(--ks-orange); }
+  .t-status {
+    font-size: 10px; font-weight: 600; display: flex; align-items: center; gap: 4px;
+  }
+  .t-status .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+  }
+  .t-status.done .dot { background: var(--ks-emerald); }
+  .t-status.done { color: var(--ks-emerald); }
+  .t-status.processing .dot { background: var(--ks-orange); }
+  .t-status.processing { color: var(--ks-orange); }
+  .t-actions {
+    display: flex; gap: 6px;
+  }
+  .t-actions .action-btn {
+    width: 24px; height: 24px; border-radius: 4px;
+    background: rgba(255,255,255,0.04); border: 1px solid var(--ks-dark-border);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .t-actions .action-btn svg { width: 11px; height: 11px; color: var(--ks-dark-text); }
+
+  /* ── CUSTOMER PORTAL ── */
+  .portal-layout { display: flex; min-height: 520px; }
+
+  /* Portal Sidebar */
+  .portal-sidebar {
+    width: 220px; flex-shrink: 0;
+    background: rgba(0,0,0,0.2);
+    border-right: 1px solid var(--ks-dark-border);
+    padding: 16px 0;
+    display: flex; flex-direction: column;
+  }
+  .portal-search {
+    margin: 0 12px 14px;
+    height: 32px; border-radius: 6px;
+    background: rgba(0,0,0,0.3); border: 1px solid var(--ks-dark-border);
+    display: flex; align-items: center; padding: 0 10px; gap: 6px;
+    font-size: 11px; color: var(--ks-dark-text);
+  }
+  .portal-search svg { width: 12px; height: 12px; opacity: 0.5; }
+
+  .watchlist-header {
+    font-size: 10px; font-weight: 600; color: var(--ks-dark-text);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 8px 16px 6px;
+  }
+  .stock-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 16px; cursor: default;
+    transition: all 0.15s; border-left: 2px solid transparent;
+  }
+  .stock-item:hover { background: rgba(255,255,255,0.03); }
+  .stock-item.active {
+    background: rgba(16,185,129,0.06); border-left-color: var(--ks-emerald);
+  }
+  .stock-item .si-left { display: flex; flex-direction: column; }
+  .stock-item .si-ticker {
+    font-size: 12px; font-weight: 700; color: var(--ks-dark-bright);
+  }
+  .stock-item .si-name {
+    font-size: 10px; color: var(--ks-dark-text); margin-top: 1px;
+  }
+  .stock-item .si-change {
+    font-size: 11px; font-weight: 600; padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .stock-item .si-change.up { background: rgba(16,185,129,0.12); color: var(--ks-emerald); }
+  .stock-item .si-change.down { background: rgba(239,68,68,0.12); color: var(--ks-red); }
+
+  /* Portal Main */
+  .portal-main { flex: 1; padding: 20px 24px; overflow: hidden; }
+  .portal-stock-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .psh-left h3 {
+    font-size: 18px; font-weight: 700; color: var(--ks-dark-bright);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .psh-left h3 .ticker-badge {
+    font-size: 10px; font-weight: 700; padding: 2px 8px;
+    border-radius: 4px; background: rgba(16,185,129,0.12);
+    color: var(--ks-emerald);
+  }
+  .psh-left .price-row {
+    display: flex; align-items: baseline; gap: 8px; margin-top: 4px;
+  }
+  .psh-left .price-val {
+    font-size: 24px; font-weight: 700; color: var(--ks-dark-bright);
+  }
+  .psh-left .price-chg {
+    font-size: 12px; font-weight: 600; color: var(--ks-emerald);
+  }
+  .psh-right {
+    display: flex; gap: 6px;
+  }
+  .psh-right .tab-btn {
+    font-size: 11px; font-weight: 600; padding: 5px 12px;
+    border-radius: 6px; color: var(--ks-dark-text);
+    background: transparent; border: 1px solid var(--ks-dark-border);
+    cursor: default;
+  }
+  .psh-right .tab-btn.active {
+    background: rgba(16,185,129,0.1); color: var(--ks-emerald);
+    border-color: rgba(16,185,129,0.3);
+  }
+
+  /* AI Analysis Card */
+  .ai-analysis-card {
+    background: rgba(0,0,0,0.2); border-radius: 10px;
+    border: 1px solid var(--ks-dark-border);
+    padding: 16px 18px; margin-bottom: 14px;
+  }
+  .ai-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .ai-card-header .ai-badge {
+    font-size: 10px; font-weight: 700; padding: 3px 8px;
+    border-radius: 4px; display: flex; align-items: center; gap: 4px;
+    background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(59,130,246,0.15));
+    color: var(--ks-emerald);
+  }
+  .ai-card-header .ai-badge svg { width: 10px; height: 10px; }
+  .ai-card-header .ai-date {
+    font-size: 10px; color: var(--ks-dark-text);
+  }
+
+  .ai-verdict {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 12px;
+  }
+  .verdict-label {
+    font-size: 11px; font-weight: 600; color: var(--ks-dark-text);
+  }
+  .verdict-tag {
+    font-size: 12px; font-weight: 700; padding: 4px 12px;
+    border-radius: 6px;
+  }
+  .verdict-tag.strong-buy {
+    background: rgba(16,185,129,0.15); color: var(--ks-emerald);
+  }
+  .confidence-bar {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 14px;
+  }
+  .confidence-bar .cb-label {
+    font-size: 10px; color: var(--ks-dark-text); font-weight: 500;
+    white-space: nowrap;
+  }
+  .confidence-bar .cb-track {
+    flex: 1; height: 6px; background: rgba(255,255,255,0.06);
+    border-radius: 3px; overflow: hidden;
+  }
+  .confidence-bar .cb-fill {
+    height: 100%; border-radius: 3px;
+    background: linear-gradient(90deg, var(--ks-emerald), var(--ks-blue));
+  }
+  .confidence-bar .cb-pct {
+    font-size: 11px; font-weight: 700; color: var(--ks-emerald);
+    min-width: 32px; text-align: right;
+  }
+
+  .ai-summary {
+    font-size: 12px; color: var(--ks-dark-text); line-height: 1.7;
+    margin-bottom: 14px;
+  }
+  .ai-summary strong { color: var(--ks-dark-bright); font-weight: 600; }
+
+  /* Source Tags */
+  .source-tags {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .source-tag {
+    font-size: 9px; font-weight: 600; padding: 3px 8px;
+    border-radius: 4px; border: 1px solid var(--ks-dark-border);
+    color: var(--ks-dark-text); display: flex; align-items: center; gap: 3px;
+  }
+  .source-tag svg { width: 9px; height: 9px; }
+
+  /* Key Metrics Mini-grid */
+  .key-metrics-row {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    margin-bottom: 14px;
+  }
+  .km-item {
+    background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px;
+    border: 1px solid var(--ks-dark-border); text-align: center;
+  }
+  .km-item .km-val {
+    font-size: 16px; font-weight: 700; color: var(--ks-dark-bright);
+    line-height: 1.2;
+  }
+  .km-item .km-label {
+    font-size: 9px; color: var(--ks-dark-text); font-weight: 500;
+    margin-top: 2px;
+  }
+  .km-item .km-delta {
+    font-size: 9px; font-weight: 600; margin-top: 2px;
+  }
+  .km-item .km-delta.up { color: var(--ks-emerald); }
+  .km-item .km-delta.down { color: var(--ks-red); }
+
+  /* ── PROCESS TIMELINE ── */
+  .process-timeline { max-width: 760px; margin: 2.5rem auto 0; }
+  .process-step {
+    display: flex; gap: 1.5rem; align-items: flex-start;
+    padding-bottom: 2rem; position: relative;
+  }
+  .process-step:not(:last-child)::after {
+    content: ''; position: absolute;
+    left: 19px; top: 44px; bottom: 0; width: 2px;
+    background: var(--border);
+  }
+  .step-number {
+    width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--ks-emerald), var(--ks-blue));
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 0.85rem; font-weight: 700;
+    position: relative; z-index: 1;
+  }
+  .step-content { padding-top: 6px; }
+  .step-content h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.35rem; }
+  .step-content p { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.65; margin-bottom: 0; }
+
+  /* ── BACK CTA ── */
+  .case-footer { padding: 4rem 2rem; text-align: center; }
+  .btn-back {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.85rem 1.75rem; border-radius: 50px;
+    font-size: 0.9rem; font-weight: 600; text-decoration: none;
+    background: var(--text); color: #fff; transition: all 0.3s;
+  }
+  .btn-back:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(45,91,255,0.18); }
+  .btn-back svg { width: 16px; height: 16px; }
+
+  footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--text-secondary); }
+
+  /* ── ANIMATIONS ── */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .stats-row { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr; }
+    .admin-sidebar, .portal-sidebar { display: none; }
+    .app-frame { max-width: 100%; }
+    .ingest-stats { grid-template-columns: repeat(2, 1fr); }
+    .key-metrics-row { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .case-hero { padding: 7rem 1.25rem 3rem; }
+    .case-section, .product-showcase { padding: 3rem 1.25rem; }
+    .case-meta { gap: 1.5rem; }
+    .ingest-stats { grid-template-columns: 1fr 1fr; }
+    .key-metrics-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">devika<span>.</span></a>
+    <a href="index.html#projects" class="back-link">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"/></svg>
+      Back to Home
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="case-hero">
+  <div class="container">
+    <div class="case-eyebrow">Case Study &middot; AI Product</div>
+    <h1>KnowYourStocks &mdash; <em>AI-powered investment intelligence</em></h1>
+    <p class="case-subtitle">An AI application that ingests earnings call transcripts, employee interviews, and analyst conversations to generate deep investment analysis and portfolio recommendations &mdash; turning unstructured audio into structured alpha.</p>
+    <div class="case-meta">
+      <div class="meta-item"><span class="meta-label">Role</span><span class="meta-value">Founder &amp; Product Lead</span></div>
+      <div class="meta-item"><span class="meta-label">Type</span><span class="meta-value">AI &middot; Investment Analysis</span></div>
+      <div class="meta-item"><span class="meta-label">Stack</span><span class="meta-value">LLMs &middot; NLP &middot; Python &middot; React</span></div>
+      <div class="meta-item"><span class="meta-label">Status</span><span class="meta-value">In Development</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="case-section">
+  <div class="container">
+    <div class="stats-row reveal">
+      <div class="stat-card"><div class="stat-num">1000+</div><div class="stat-label">Transcripts Processed</div></div>
+      <div class="stat-card"><div class="stat-num">50+</div><div class="stat-label">Tech Companies Covered</div></div>
+      <div class="stat-card"><div class="stat-num">92%</div><div class="stat-label">Sentiment Accuracy</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CHALLENGE -->
+<section class="case-section alt">
+  <div class="container narrow reveal">
+    <h2>The challenge</h2>
+    <p>Retail investors are at a structural disadvantage. Institutional funds have armies of analysts listening to every earnings call, conducting channel checks with employees, and synthesizing thousands of hours of qualitative data into investment theses. Individual investors get a 2-line summary on a news app.</p>
+    <p>The insight was that LLMs had become good enough to close this gap &mdash; to ingest raw transcripts from earnings calls, 1-on-1 interviews with company employees, and analyst conversations, then produce the kind of deep, nuanced investment analysis that was previously locked behind six-figure Bloomberg terminals.</p>
+  </div>
+</section>
+
+<!-- PRODUCT SHOWCASE -->
+<section class="product-showcase">
+  <div class="container">
+    <h2 class="reveal">The product</h2>
+    <p class="showcase-subtitle reveal">Two interfaces &mdash; one for data ingestion, one for investment intelligence</p>
+
+    <div class="showcase-panels">
+
+      <!-- ═══ ADMIN DASHBOARD ═══ -->
+      <div class="reveal">
+        <div class="panel-label">Admin &mdash; Transcript Ingestion &amp; Reports</div>
+        <div class="app-frame">
+          <div class="frame-titlebar">
+            <div class="frame-dots"><span></span><span></span><span></span></div>
+            <div class="frame-url">admin.knowyourstocks.ai/transcripts</div>
+            <div class="frame-titlebar-right"></div>
+          </div>
+          <div class="admin-layout">
+            <!-- Sidebar -->
+            <div class="admin-sidebar">
+              <div class="sidebar-brand">
+                <div class="brand-name">
+                  <span class="logo-icon">K</span>
+                  KnowYourStocks
+                </div>
+                <div class="brand-sub">Admin Console</div>
+              </div>
+              <div class="sidebar-nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                Dashboard
+              </div>
+              <div class="sidebar-nav-item active">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                Transcripts
+              </div>
+              <div class="sidebar-nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                Reports
+              </div>
+              <div class="sidebar-nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                Settings
+              </div>
+            </div>
+            <!-- Main -->
+            <div class="admin-main">
+              <div class="admin-header">
+                <h3>Transcript Ingestion</h3>
+                <div class="upload-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  Upload Transcript
+                </div>
+              </div>
+
+              <div class="ingest-stats">
+                <div class="ingest-stat"><div class="is-num">1,247</div><div class="is-label">Total Transcripts</div></div>
+                <div class="ingest-stat"><div class="is-num">52</div><div class="is-label">Companies</div></div>
+                <div class="ingest-stat"><div class="is-num">186</div><div class="is-label">Reports Generated</div></div>
+                <div class="ingest-stat"><div class="is-num" style="color:var(--ks-emerald);">3</div><div class="is-label">Processing Now</div></div>
+              </div>
+
+              <table class="transcript-table">
+                <thead>
+                  <tr>
+                    <th>Source</th>
+                    <th>Type</th>
+                    <th>Company</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Q4 2025 Earnings Call</td>
+                    <td><span class="t-type earnings">Earnings</span></td>
+                    <td>NVIDIA</td>
+                    <td>Jan 28, 2026</td>
+                    <td><span class="t-status done"><span class="dot"></span>Analyzed</span></td>
+                    <td><div class="t-actions"><div class="action-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div></div></td>
+                  </tr>
+                  <tr>
+                    <td>Sr. Engineer Interview</td>
+                    <td><span class="t-type interview">Interview</span></td>
+                    <td>Apple</td>
+                    <td>Feb 3, 2026</td>
+                    <td><span class="t-status done"><span class="dot"></span>Analyzed</span></td>
+                    <td><div class="t-actions"><div class="action-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div></div></td>
+                  </tr>
+                  <tr>
+                    <td>Analyst Day Keynote</td>
+                    <td><span class="t-type analyst">Analyst</span></td>
+                    <td>Microsoft</td>
+                    <td>Feb 10, 2026</td>
+                    <td><span class="t-status processing"><span class="dot"></span>Processing</span></td>
+                    <td><div class="t-actions"><div class="action-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div></div></td>
+                  </tr>
+                  <tr>
+                    <td>Product Manager 1:1</td>
+                    <td><span class="t-type interview">Interview</span></td>
+                    <td>Tesla</td>
+                    <td>Feb 12, 2026</td>
+                    <td><span class="t-status processing"><span class="dot"></span>Processing</span></td>
+                    <td><div class="t-actions"><div class="action-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div></div></td>
+                  </tr>
+                  <tr>
+                    <td>Q1 2026 Earnings Call</td>
+                    <td><span class="t-type earnings">Earnings</span></td>
+                    <td>Meta</td>
+                    <td>Feb 14, 2026</td>
+                    <td><span class="t-status done"><span class="dot"></span>Analyzed</span></td>
+                    <td><div class="t-actions"><div class="action-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div></div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ CUSTOMER PORTAL ═══ -->
+      <div class="reveal reveal-delay-1">
+        <div class="panel-label">Customer Portal &mdash; Investment Analysis</div>
+        <div class="app-frame">
+          <div class="frame-titlebar">
+            <div class="frame-dots"><span></span><span></span><span></span></div>
+            <div class="frame-url">app.knowyourstocks.ai/analysis/NVDA</div>
+            <div class="frame-titlebar-right"></div>
+          </div>
+          <div class="portal-layout">
+            <!-- Sidebar -->
+            <div class="portal-sidebar">
+              <div class="portal-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                Search stocks...
+              </div>
+              <div class="watchlist-header">My Watchlist</div>
+              <div class="stock-item active">
+                <div class="si-left">
+                  <span class="si-ticker">NVDA</span>
+                  <span class="si-name">NVIDIA Corp</span>
+                </div>
+                <span class="si-change up">+4.2%</span>
+              </div>
+              <div class="stock-item">
+                <div class="si-left">
+                  <span class="si-ticker">AAPL</span>
+                  <span class="si-name">Apple Inc</span>
+                </div>
+                <span class="si-change up">+1.1%</span>
+              </div>
+              <div class="stock-item">
+                <div class="si-left">
+                  <span class="si-ticker">MSFT</span>
+                  <span class="si-name">Microsoft</span>
+                </div>
+                <span class="si-change down">-0.8%</span>
+              </div>
+              <div class="stock-item">
+                <div class="si-left">
+                  <span class="si-ticker">TSLA</span>
+                  <span class="si-name">Tesla Inc</span>
+                </div>
+                <span class="si-change up">+2.7%</span>
+              </div>
+              <div class="stock-item">
+                <div class="si-left">
+                  <span class="si-ticker">META</span>
+                  <span class="si-name">Meta Platforms</span>
+                </div>
+                <span class="si-change up">+0.9%</span>
+              </div>
+              <div class="stock-item">
+                <div class="si-left">
+                  <span class="si-ticker">GOOG</span>
+                  <span class="si-name">Alphabet Inc</span>
+                </div>
+                <span class="si-change down">-0.3%</span>
+              </div>
+            </div>
+            <!-- Main -->
+            <div class="portal-main">
+              <div class="portal-stock-header">
+                <div class="psh-left">
+                  <h3>NVIDIA Corporation <span class="ticker-badge">NVDA</span></h3>
+                  <div class="price-row">
+                    <span class="price-val">$892.40</span>
+                    <span class="price-chg">&#9650; +$36.10 (4.2%)</span>
+                  </div>
+                </div>
+                <div class="psh-right">
+                  <div class="tab-btn active">AI Analysis</div>
+                  <div class="tab-btn">Transcripts</div>
+                  <div class="tab-btn">Financials</div>
+                </div>
+              </div>
+
+              <div class="key-metrics-row">
+                <div class="km-item">
+                  <div class="km-val">$130.5B</div>
+                  <div class="km-label">Revenue (TTM)</div>
+                  <div class="km-delta up">&#9650; +94% YoY</div>
+                </div>
+                <div class="km-item">
+                  <div class="km-val">56.2%</div>
+                  <div class="km-label">Net Margin</div>
+                  <div class="km-delta up">&#9650; +8.1pp</div>
+                </div>
+                <div class="km-item">
+                  <div class="km-val">$28.4B</div>
+                  <div class="km-label">Data Center Rev</div>
+                  <div class="km-delta up">&#9650; +112% QoQ</div>
+                </div>
+              </div>
+
+              <div class="ai-analysis-card">
+                <div class="ai-card-header">
+                  <div class="ai-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 014 4c0 1.95-1.4 3.58-3.25 3.93L12 22l-.75-12.07A4.001 4.001 0 0112 2z"/><path d="M9 6.5a2.5 2.5 0 00-5 0C4 8.5 6 9 6 9"/><path d="M15 6.5a2.5 2.5 0 015 0c0 2-2 2.5-2 2.5"/></svg>
+                    AI Analysis
+                  </div>
+                  <span class="ai-date">Updated Feb 14, 2026 &middot; 12 sources</span>
+                </div>
+
+                <div class="ai-verdict">
+                  <span class="verdict-label">AI Verdict:</span>
+                  <span class="verdict-tag strong-buy">&#9679; Strong Buy</span>
+                </div>
+
+                <div class="confidence-bar">
+                  <span class="cb-label">Confidence</span>
+                  <div class="cb-track"><div class="cb-fill" style="width:89%"></div></div>
+                  <span class="cb-pct">89%</span>
+                </div>
+
+                <div class="ai-summary">
+                  <strong>Thesis:</strong> NVIDIA continues to dominate AI infrastructure with data center revenue accelerating beyond consensus. Employee interviews indicate Blackwell architecture ramp is ahead of schedule with supply constraints easing Q2. Earnings call sentiment showed management confidence at highest level in 3 quarters. Key risk: customer concentration in hyperscalers.
+                </div>
+
+                <div class="source-tags">
+                  <span class="source-tag">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Q4 Earnings Call
+                  </span>
+                  <span class="source-tag">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    3 Employee Interviews
+                  </span>
+                  <span class="source-tag">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                    2 Analyst Notes
+                  </span>
+                  <span class="source-tag">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
+                    Analyst Day Keynote
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- MY ROLE -->
+<section class="case-section">
+  <div class="container narrow reveal">
+    <h2>My role &amp; approach</h2>
+    <p>As founder, I owned the full product vision &mdash; from identifying the market gap through designing the AI pipeline architecture, building the ingestion workflow, and crafting the customer-facing analysis experience. The core thesis was simple: if LLMs could read a thousand transcripts and synthesize them the way a top analyst would, retail investors could access institutional-grade intelligence for the first time.</p>
+    <p>The product has two distinct surfaces: an admin dashboard where transcripts are uploaded, classified, and processed through the AI pipeline &mdash; and a customer-facing portal where investors browse stocks and read AI-generated analysis that cites its sources (specific earnings calls, specific interviews) so users can always trace a claim back to its origin.</p>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="case-section alt">
+  <div class="container">
+    <h2 class="reveal">How it works</h2>
+    <div class="process-timeline">
+      <div class="process-step reveal">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h3>Ingest &amp; classify</h3>
+          <p>Transcripts from earnings calls, employee 1-on-1s, and analyst conversations are uploaded and automatically classified by type, company, and date. The system extracts speaker segments and metadata for downstream processing.</p>
+        </div>
+      </div>
+      <div class="process-step reveal reveal-delay-1">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h3>AI analysis pipeline</h3>
+          <p>Each transcript is processed through an LLM pipeline that extracts key themes, sentiment signals, financial metrics, forward guidance, and risk factors. Employee interviews are cross-referenced against official earnings narratives to identify gaps between internal reality and public positioning.</p>
+        </div>
+      </div>
+      <div class="process-step reveal reveal-delay-2">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h3>Synthesis &amp; scoring</h3>
+          <p>Multi-source analysis is synthesized into a unified investment thesis per company &mdash; with a confidence-weighted recommendation (Strong Buy to Sell) backed by evidence from specific transcripts. The system tracks how signals evolve quarter over quarter.</p>
+        </div>
+      </div>
+      <div class="process-step reveal reveal-delay-3">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <h3>Customer intelligence portal</h3>
+          <p>Investors access a clean, research-grade interface showing AI verdicts, key metrics, full analysis with source citations, and portfolio-level recommendations. Every claim is traceable to a specific transcript and timestamp.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="case-section">
+  <div class="container">
+    <h2 class="reveal">Product pillars</h2>
+    <div class="features-grid">
+      <div class="feature-card reveal"><div class="feature-icon">&#129302;</div><h3>LLM-Powered Analysis</h3><p>Advanced language models that read thousands of pages of transcripts and extract the same insights a senior analyst would &mdash; sentiment shifts, guidance changes, competitive signals, and risk factors.</p></div>
+      <div class="feature-card reveal reveal-delay-1"><div class="feature-icon">&#128269;</div><h3>Multi-Source Synthesis</h3><p>Cross-references earnings calls with employee interviews and analyst notes to identify where public narratives diverge from internal signals &mdash; the kind of edge that moves portfolios.</p></div>
+      <div class="feature-card reveal reveal-delay-2"><div class="feature-icon">&#128202;</div><h3>Traceable Intelligence</h3><p>Every AI recommendation cites its sources with links to specific transcripts and timestamps. Investors can always verify the evidence behind a thesis &mdash; no black-box recommendations.</p></div>
+      <div class="feature-card reveal reveal-delay-3"><div class="feature-icon">&#9889;</div><h3>Real-Time Pipeline</h3><p>New transcripts are processed within hours of upload. The analysis pipeline updates company scores and portfolio recommendations automatically as new data flows in.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- LEARNINGS -->
+<section class="case-section alt">
+  <div class="container narrow reveal">
+    <h2>Key learnings</h2>
+    <p>The biggest insight was that trust is the product. Investors won't act on AI recommendations they can't verify. Building source traceability into every analysis &mdash; linking each claim to a specific transcript, speaker, and timestamp &mdash; was the single most important design decision. It turned the product from a novelty into something people would actually use for real portfolio decisions.</p>
+    <p>The second learning was about the power of alternative data. Employee interviews revealed signals that never appeared in earnings calls &mdash; product delays, internal reorganizations, morale shifts. When cross-referenced against management's public statements, these gaps became some of the most valuable analytical signals in the system.</p>
+  </div>
+</section>
+
+<!-- BACK -->
+<section class="case-footer">
+  <a href="index.html#projects" class="btn-back">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"/></svg>
+    Back to Home
+  </a>
+</section>
+
+<footer><p>&copy; 2026 Devika Naik. Crafted in New York.</p></footer>
+
+<script>
+  var mainNav = document.getElementById('mainNav');
+  window.addEventListener('scroll', function() { mainNav.classList.toggle('scrolled', window.scrollY > 40); });
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+</script>
+</body>
+</html>
